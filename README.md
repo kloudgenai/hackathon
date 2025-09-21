@@ -2,9 +2,6 @@
 
 **Automating Healthcare Software Testing with AI-Powered Compliance**
 
-*Author: Manus AI*  
-*Version: 1.0*  
-*Date: September 2025*
 
 ## Table of Contents
 
