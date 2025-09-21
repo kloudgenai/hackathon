@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Test Case Generator - Healthcare Software Testing</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .compliance-badge {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .status-healthy { background-color: #10b981; }
+        .status-warning { background-color: #f59e0b; }
+        .status-error { background-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="gradient-bg shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-robot text-white text-2xl mr-3"></i>
+                        <span class="text-white text-xl font-bold">AI Test Case Generator</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="healthCheck" class="text-white hover:text-gray-200 transition-colors">
+                        <i class="fas fa-heartbeat mr-2"></i>
+                        <span id="healthStatus">Checking...</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="px-4 py-6 sm:px-0">
+            <div class="text-center mb-8 fade-in">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                    Healthcare Software Testing Automation
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Automatically convert healthcare software requirements into compliant, traceable test cases 
+                    integrated with enterprise toolchains.
+                </p>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Requirements Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-file-alt text-blue-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Requirements</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="requirementsCount">0</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button onclick="showRequirements()" class="font-medium text-blue-600 hover:text-blue-500">
+                            View all <span class="sr-only">requirements</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Cases Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-vial text-green-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Test Cases</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="testCasesCount">0</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button onclick="showTestCases()" class="font-medium text-green-600 hover:text-green-500">
+                            View all <span class="sr-only">test cases</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-shield-alt text-purple-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Compliance</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="complianceScore">--</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button onclick="showCompliance()" class="font-medium text-purple-600 hover:text-purple-500">
+                            View report <span class="sr-only">compliance</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integrations Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg card-hover">
+                <div class="p-5">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-plug text-orange-500 text-2xl"></i>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Integrations</dt>
+                                <dd class="text-lg font-medium text-gray-900" id="integrationsCount">0</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-5 py-3">
+                    <div class="text-sm">
+                        <button onclick="showIntegrations()" class="font-medium text-orange-600 hover:text-orange-500">
+                            Configure <span class="sr-only">integrations</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Action Buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Upload Requirements -->
+            <div class="bg-white shadow rounded-lg p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-upload text-blue-500 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Upload Requirements</h3>
+                    <p class="text-sm text-gray-500 mb-4">
+                        Upload healthcare software requirements in PDF, Word, or XML format
+                    </p>
+                    <input type="file" id="requirementFile" accept=".pdf,.docx,.doc,.xml,.md,.txt" class="hidden">
+                    <button onclick="document.getElementById('requirementFile').click()" 
+                            class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                        Choose File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Generate Test Cases -->
+            <div class="bg-white shadow rounded-lg p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-magic text-green-500 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Generate Test Cases</h3>
+                    <p class="text-sm text-gray-500 mb-4">
+                        Automatically generate compliant test cases from requirements using AI
+                    </p>
+                    <button onclick="generateTestCases()" 
+                            class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors">
+                        Generate Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Compliance Check -->
+            <div class="bg-white shadow rounded-lg p-6 card-hover">
+                <div class="text-center">
+                    <i class="fas fa-check-circle text-purple-500 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Compliance Check</h3>
+                    <p class="text-sm text-gray-500 mb-4">
+                        Validate compliance with FDA, IEC 62304, ISO standards
+                    </p>
+                    <button onclick="runComplianceCheck()" 
+                            class="w-full bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                        Run Check
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div id="contentArea" class="bg-white shadow rounded-lg p-6 mb-8">
+            <div class="text-center py-12">
+                <i class="fas fa-rocket text-gray-400 text-6xl mb-4"></i>
+                <h3 class="text-xl font-medium text-gray-900 mb-2">Welcome to AI Test Case Generator</h3>
+                <p class="text-gray-500">
+                    Start by uploading requirements or exploring the features above.
+                </p>
+            </div>
+        </div>
+
+        <!-- Supported Standards -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+                <i class="fas fa-certificate text-blue-500 mr-2"></i>
+                Supported Compliance Standards
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4" id="standardsList">
+                <!-- Standards will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
+            <div class="text-center">
+                <div class="pulse-animation">
+                    <i class="fas fa-cog fa-spin text-blue-500 text-4xl mb-4"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Processing...</h3>
+                <p class="text-sm text-gray-500" id="loadingMessage">Please wait while we process your request.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentData = {
+            requirements: [],
+            testCases: [],
+            compliance: {},
+            integrations: []
+        };
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHealth();
+            loadStandards();
+            loadDashboardData();
+            
+            // Set up file upload handler
+            document.getElementById('requirementFile').addEventListener('change', handleFileUpload);
+        });
+
+        // Health check
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                const statusElement = document.getElementById('healthStatus');
+                if (data.status === 'healthy') {
+                    statusElement.innerHTML = '<span class="status-indicator status-healthy"></span>Healthy';
+                } else {
+                    statusElement.innerHTML = '<span class="status-indicator status-error"></span>Error';
+                }
+            } catch (error) {
+                document.getElementById('healthStatus').innerHTML = '<span class="status-indicator status-error"></span>Offline';
+            }
+        }
+
+        // Load compliance standards
+        async function loadStandards() {
+            try {
+                const response = await fetch('/api/compliance/standards');
+                const data = await response.json();
+                
+                const standardsList = document.getElementById('standardsList');
+                standardsList.innerHTML = '';
+                
+                data.standards.forEach(standard => {
+                    const badge = document.createElement('div');
+                    badge.className = 'compliance-badge text-center';
+                    badge.innerHTML = `
+                        <div class="font-semibold">${standard.name}</div>
+                        <div class="text-xs opacity-75">${standard.rules_count} rules</div>
+                    `;
+                    standardsList.appendChild(badge);
+                });
+            } catch (error) {
+                console.error('Error loading standards:', error);
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            try {
+                // Load requirements count
+                const reqResponse = await fetch('/api/requirements');
+                if (reqResponse.ok) {
+                    const reqData = await reqResponse.json();
+                    document.getElementById('requirementsCount').textContent = reqData.requirements?.length || 0;
+                    currentData.requirements = reqData.requirements || [];
+                }
+
+                // Load test cases count (placeholder)
+                document.getElementById('testCasesCount').textContent = '0';
+                
+                // Load compliance score (placeholder)
+                document.getElementById('complianceScore').textContent = 'N/A';
+                
+                // Load integrations count
+                const intResponse = await fetch('/api/alm/configurations');
+                if (intResponse.ok) {
+                    const intData = await intResponse.json();
+                    document.getElementById('integrationsCount').textContent = Object.keys(intData.configurations || {}).length;
+                    currentData.integrations = intData.configurations || {};
+                }
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+            }
+        }
+
+        // Show loading modal
+        function showLoading(message = 'Processing...') {
+            document.getElementById('loadingMessage').textContent = message;
+            document.getElementById('loadingModal').classList.remove('hidden');
+            document.getElementById('loadingModal').classList.add('flex');
+        }
+
+        // Hide loading modal
+        function hideLoading() {
+            document.getElementById('loadingModal').classList.add('hidden');
+            document.getElementById('loadingModal').classList.remove('flex');
+        }
+
+        // Handle file upload
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showLoading('Uploading and processing requirements...');
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/requirements/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    showSuccess('Requirements uploaded successfully!');
+                    loadDashboardData();
+                    showRequirements();
+                } else {
+                    hideLoading();
+                    showError(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Upload failed: ' + error.message);
+            }
+        }
+
+        // Generate test cases
+        async function generateTestCases() {
+            if (currentData.requirements.length === 0) {
+                showError('Please upload requirements first');
+                return;
+            }
+
+            showLoading('Generating test cases using AI...');
+
+            try {
+                const response = await fetch('/api/requirements/generate-test-cases', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        requirement_ids: currentData.requirements.map(r => r.id)
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    showSuccess(`Generated ${result.generated_count} test cases!`);
+                    loadDashboardData();
+                    showTestCases();
+                } else {
+                    hideLoading();
+                    showError(result.error || 'Generation failed');
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Generation failed: ' + error.message);
+            }
+        }
+
+        // Run compliance check
+        async function runComplianceCheck() {
+            showLoading('Running compliance analysis...');
+
+            try {
+                const response = await fetch('/api/compliance/generate-report', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    currentData.compliance = result;
+                    showCompliance();
+                } else {
+                    hideLoading();
+                    showError(result.error || 'Compliance check failed');
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Compliance check failed: ' + error.message);
+            }
+        }
+
+        // Show requirements
+        function showRequirements() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-file-alt text-blue-500 mr-2"></i>
+                        Requirements Management
+                    </h2>
+                    <div class="space-y-4">
+                        ${currentData.requirements.length === 0 ? 
+                            '<p class="text-gray-500 text-center py-8">No requirements uploaded yet. Use the upload button above to get started.</p>' :
+                            currentData.requirements.map(req => `
+                                <div class="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <h3 class="font-semibold text-gray-900">${req.requirement_id}: ${req.title}</h3>
+                                            <p class="text-gray-600 mt-1">${req.description.substring(0, 200)}${req.description.length > 200 ? '...' : ''}</p>
+                                            <div class="flex items-center mt-2 space-x-4">
+                                                <span class="text-sm text-gray-500">Type: ${req.type}</span>
+                                                <span class="text-sm text-gray-500">Priority: ${req.priority}</span>
+                                                <span class="text-sm text-gray-500">Standards: ${req.regulatory_standards?.join(', ') || 'None'}</span>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <button onclick="assessRequirementCompliance(${req.id})" 
+                                                    class="text-purple-600 hover:text-purple-800 text-sm">
+                                                <i class="fas fa-shield-alt mr-1"></i>Check Compliance
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show test cases
+        function showTestCases() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-vial text-green-500 mr-2"></i>
+                        Test Cases
+                    </h2>
+                    <div class="text-center py-8">
+                        <i class="fas fa-flask text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-500">Test cases will appear here after generation.</p>
+                        <button onclick="generateTestCases()" 
+                                class="mt-4 bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+                            Generate Test Cases
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show compliance
+        function showCompliance() {
+            const contentArea = document.getElementById('contentArea');
+            
+            if (Object.keys(currentData.compliance).length === 0) {
+                contentArea.innerHTML = `
+                    <div class="fade-in">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                            <i class="fas fa-shield-alt text-purple-500 mr-2"></i>
+                            Compliance Analysis
+                        </h2>
+                        <div class="text-center py-8">
+                            <i class="fas fa-certificate text-gray-400 text-4xl mb-4"></i>
+                            <p class="text-gray-500">Run a compliance check to see detailed analysis.</p>
+                            <button onclick="runComplianceCheck()" 
+                                    class="mt-4 bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-colors">
+                                Run Compliance Check
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            const overallCompliance = currentData.compliance.overall_compliance || {};
+            
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-shield-alt text-purple-500 mr-2"></i>
+                        Compliance Report
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+                        ${Object.entries(overallCompliance).map(([standard, data]) => `
+                            <div class="border rounded-lg p-4">
+                                <h3 class="font-semibold text-gray-900 mb-2">${standard}</h3>
+                                <div class="flex items-center mb-2">
+                                    <div class="w-full bg-gray-200 rounded-full h-2 mr-2">
+                                        <div class="bg-${data.compliance_level === 'compliant' ? 'green' : data.compliance_level === 'partially_compliant' ? 'yellow' : 'red'}-600 h-2 rounded-full" 
+                                             style="width: ${(data.score * 100).toFixed(0)}%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium">${(data.score * 100).toFixed(0)}%</span>
+                                </div>
+                                <p class="text-sm text-gray-600">
+                                    Status: <span class="font-medium capitalize">${data.compliance_level.replace('_', ' ')}</span>
+                                </p>
+                                <p class="text-xs text-gray-500 mt-1">
+                                    ${data.requirement_count} requirements, ${data.test_case_count} test cases
+                                </p>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    ${currentData.compliance.recommendations?.length > 0 ? `
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <h3 class="font-semibold text-blue-900 mb-2">
+                                <i class="fas fa-lightbulb mr-2"></i>Recommendations
+                            </h3>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-blue-800">
+                                ${currentData.compliance.recommendations.slice(0, 5).map(rec => `<li>${rec}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Show integrations
+        function showIntegrations() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-plug text-orange-500 mr-2"></i>
+                        ALM Integrations
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                            <i class="fab fa-atlassian text-blue-600 text-4xl mb-3"></i>
+                            <h3 class="font-semibold text-gray-900 mb-2">Jira</h3>
+                            <p class="text-sm text-gray-600 mb-4">Connect to Atlassian Jira for issue tracking</p>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Configure
+                            </button>
+                        </div>
+                        
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                            <i class="fab fa-microsoft text-blue-600 text-4xl mb-3"></i>
+                            <h3 class="font-semibold text-gray-900 mb-2">Azure DevOps</h3>
+                            <p class="text-sm text-gray-600 mb-4">Integrate with Microsoft Azure DevOps</p>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Configure
+                            </button>
+                        </div>
+                        
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer">
+                            <i class="fas fa-cogs text-blue-600 text-4xl mb-3"></i>
+                            <h3 class="font-semibold text-gray-900 mb-2">Polarion</h3>
+                            <p class="text-sm text-gray-600 mb-4">Connect to Siemens Polarion ALM</p>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                Configure
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-6">
+                        <h3 class="font-semibold text-gray-900 mb-4">Integration Benefits</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-sync-alt text-green-500 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Bi-directional Sync</h4>
+                                    <p class="text-sm text-gray-600">Automatically sync requirements and test cases</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-link text-blue-500 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Traceability</h4>
+                                    <p class="text-sm text-gray-600">Maintain full traceability across tools</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-shield-alt text-purple-500 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Compliance</h4>
+                                    <p class="text-sm text-gray-600">Ensure regulatory compliance</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-clock text-orange-500 mr-3 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Real-time Updates</h4>
+                                    <p class="text-sm text-gray-600">Get instant notifications of changes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Assess requirement compliance
+        async function assessRequirementCompliance(reqId) {
+            showLoading('Assessing compliance...');
+            
+            try {
+                const response = await fetch(`/api/compliance/assess-requirement/${reqId}`, {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    hideLoading();
+                    showComplianceResults(result);
+                } else {
+                    hideLoading();
+                    showError(result.error || 'Assessment failed');
+                }
+            } catch (error) {
+                hideLoading();
+                showError('Assessment failed: ' + error.message);
+            }
+        }
+
+        // Show compliance results
+        function showComplianceResults(results) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = `
+                <div class="fade-in">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">
+                        <i class="fas fa-clipboard-check text-purple-500 mr-2"></i>
+                        Compliance Assessment Results
+                    </h2>
+                    <div class="space-y-4">
+                        ${results.compliance_results.map(result => `
+                            <div class="border rounded-lg p-4 ${result.compliance_level === 'compliant' ? 'border-green-200 bg-green-50' : 
+                                                                   result.compliance_level === 'partially_compliant' ? 'border-yellow-200 bg-yellow-50' : 
+                                                                   'border-red-200 bg-red-50'}">
+                                <div class="flex justify-between items-start mb-3">
+                                    <h3 class="font-semibold text-gray-900">${result.standard}</h3>
+                                    <span class="px-3 py-1 rounded-full text-xs font-medium ${
+                                        result.compliance_level === 'compliant' ? 'bg-green-100 text-green-800' :
+                                        result.compliance_level === 'partially_compliant' ? 'bg-yellow-100 text-yellow-800' :
+                                        'bg-red-100 text-red-800'
+                                    }">
+                                        ${result.compliance_level.replace('_', ' ').toUpperCase()}
+                                    </span>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-sm text-gray-600 mr-2">Score:</span>
+                                        <div class="flex-1 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-${result.compliance_level === 'compliant' ? 'green' : result.compliance_level === 'partially_compliant' ? 'yellow' : 'red'}-600 h-2 rounded-full" 
+                                                 style="width: ${(result.score * 100).toFixed(0)}%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium">${(result.score * 100).toFixed(0)}%</span>
+                                    </div>
+                                </div>
+                                ${result.findings.length > 0 ? `
+                                    <div class="mb-3">
+                                        <h4 class="font-medium text-gray-900 mb-1">Findings:</h4>
+                                        <ul class="list-disc list-inside text-sm text-gray-700">
+                                            ${result.findings.map(finding => `<li>${finding}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                                ${result.recommendations.length > 0 ? `
+                                    <div>
+                                        <h4 class="font-medium text-gray-900 mb-1">Recommendations:</h4>
+                                        <ul class="list-disc list-inside text-sm text-gray-700">
+                                            ${result.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="showRequirements()" 
+                                class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Requirements
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function showSuccess(message) {
+            // Simple success notification (could be enhanced with a proper notification system)
+            alert('Success: ' + message);
+        }
+
+        function showError(message) {
+            // Simple error notification (could be enhanced with a proper notification system)
+            alert('Error: ' + message);
+        }
+    </script>
+</body>
+</html>
+
